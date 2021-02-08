@@ -24,9 +24,7 @@ def poll_loop(consumer):
             print("Consumer error: {}".format(msg.error()))
             continue
 
-        print('Received message: {}'.format(msg.value().decode('utf-8')))
-        print('Offset: {}'.format(msg.offset().decode('utf-8')))
-        print('Partition: {}'.format(msg.partition().decode('utf-8')))
+        print("Message {} at offset {} of partition {}".format(msg.value().decode('utf-8'), msg.offset(), msg.partition()))
 
     consumer.close()
 

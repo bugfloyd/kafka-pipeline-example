@@ -1,8 +1,16 @@
 from confluent_kafka.admin import AdminClient, NewTopic
 
 
+def get_client(kafka_host="localhost:9092"):
+    """ Get Kafka admin client for the given host and port
+    :param kafka_host: Kafka host:port
+    :return: Kafka admin client
+    """
+    return AdminClient({'bootstrap.servers': kafka_host})
+
+
 def print_all_topics(client):
-    """Print all topics for a given admin client
+    """ Print all topics for a given admin client
     :param client: Kafka admin client
     :return: void
     """
@@ -16,16 +24,8 @@ def print_all_topics(client):
     print('\n')
 
 
-def get_client(kafka_host="localhost:9092"):
-    """Get Kafka admin client for the given host and port
-    :param kafka_host: Kafka host:port
-    :return: Kafka admin client
-    """
-    return AdminClient({'bootstrap.servers': kafka_host})
-
-
 def create_topics(client):
-    """Create topics in the given admin client
+    """ Create topics in the given admin client
     :param client: Kafka admin client
     :return:  void
     """
