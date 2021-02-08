@@ -30,8 +30,8 @@ def create_topics(client):
     :return:  void
     """
     print('Creating new topics')
-    new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1)
-                  for topic in ["quote-feedback1", "quote-feedback2"]]
+    new_topics = [NewTopic(topic, num_partitions=2, replication_factor=1)
+                  for topic in ["quote-feedback"]]
 
     # Call create_topics to asynchronously create topics. A dict
     # of <topic,future> is returned.
