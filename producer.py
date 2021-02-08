@@ -13,7 +13,7 @@ def delivery_report(err, msg):
     if err is not None:
         print('Message delivery failed: {}'.format(err))
     else:
-        print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
+        print('Message with key {} delivered to {} [{}]'.format(msg.key(), msg.topic(), msg.partition()))
 
 
 def produce_messages(producer, messages):
@@ -25,7 +25,12 @@ def produce_messages(producer, messages):
         # will be triggered from poll() above, or flush() below, when the message has
         # been successfully delivered or failed permanently.
         print("Attempting to produce: {}".format(data))
-        producer.produce('quote-feedback', data.encode('utf-8'), callback=delivery_report)
+        producer.produce(
+            'quote-feedback',
+            data['message'].encode('utf-8'),
+            key=bytes(data['key']),
+            callback=delivery_report
+        )
 
     # Wait for any outstanding messages to be delivered and delivery report
     # callbacks to be triggered.
@@ -34,7 +39,11 @@ def produce_messages(producer, messages):
 
 def main():
     producer = get_producer()
-    messages = ["Order 28554 accepted", "Order 28587 accepted", "Order 285874 accepted"]
+    messages = [
+        {'key': 1, 'message': "Order 28554 accepted"},
+        {'key': 2, 'message': "Order 28587 accepted"},
+        {'key': 3, 'message': "Order 285874 accepted"}
+    ]
     produce_messages(producer, messages)
 
 
