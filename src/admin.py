@@ -1,5 +1,6 @@
-from confluent_kafka.admin import AdminClient, NewTopic
+from confluent_kafka.admin import AdminClient, NewTopic, TopicMetadata
 import subprocess
+
 
 def get_client(kafka_host="localhost:9092"):
     """ Get Kafka admin client for the given host and port
@@ -9,16 +10,38 @@ def get_client(kafka_host="localhost:9092"):
     return AdminClient({'bootstrap.servers': kafka_host})
 
 
+def print_broker_metadata(cluster_metadata, broker_id):
+    try:
+        output = "{}:{} (id: {})".format(
+            cluster_metadata.brokers[broker_id].host,
+            cluster_metadata.brokers[broker_id].port,
+            broker_id
+        )
+    except Exception as e:
+        output = "Failed to get metadata for broker with ID: {}".format(broker_id)
+    return output
+
+
 def print_all_topics(client):
     """ Print all topics for a given admin client
     :param client: Kafka admin client
     :return: void
     """
-    topics = client.list_topics().topics
+    cluster_metadata = client.list_topics()
+    topics = cluster_metadata.topics
+
     print("Topics in the cluster:")
+    print('------------')
     if bool(topics) == 1:
         for topic in topics:
-            print(topic)
+            print("Topic: {}".format(topic))
+            partitions = topics[topic].partitions
+            for partition in partitions:
+                print("Partition {}:".format(partition))
+                print("  Leader: {}".format(print_broker_metadata(cluster_metadata, partitions[partition].leader)))
+                print("  Replicas:")
+                for replica in partitions[partition].replicas:
+                    print('    - {}'.format(print_broker_metadata(cluster_metadata, replica)))
     else:
         print('No topics found')
     print('\n')
