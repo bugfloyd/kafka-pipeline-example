@@ -53,7 +53,7 @@ def create_topics(client):
     :return:  void
     """
     print('Creating new topics')
-    new_topics = [NewTopic(topic, num_partitions=2, replication_factor=1)
+    new_topics = [NewTopic(topic, num_partitions=2, replication_factor=3, config={'min.insync.replicas': '2'})
                   for topic in ["quote-feedback"]]
 
     # Call create_topics to asynchronously create topics. A dict
@@ -88,7 +88,7 @@ def describe_consumer_group(consumer_group):
 
 
 def main():
-    admin = get_client()
+    admin = get_client("localhost:9091,localhost:9092,localhost:9093")
     print_all_topics(admin)
     create_topics(admin)
     print_all_topics(admin)

@@ -6,6 +6,7 @@ from time import sleep
 def get_producer(kafka_host="localhost:9092"):
     return Producer({
         'bootstrap.servers': kafka_host,
+        'acks': 'all',
         'linger.ms': '1000',
         'compression.type': 'gzip'
     })
@@ -60,7 +61,7 @@ def produce_many(producer, count, sleep_time=0.01, message="Order accepted."):
 
 
 def main():
-    producer = get_producer()
+    producer = get_producer("localhost:9091,localhost:9092,localhost:9093")
     messages = [
         {'key': 1, 'message': "Order 28554 accepted"},
         {'key': 2, 'message': "Order 28587 accepted"},
