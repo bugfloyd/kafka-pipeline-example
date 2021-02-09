@@ -1,5 +1,5 @@
 from confluent_kafka.admin import AdminClient, NewTopic
-
+import subprocess
 
 def get_client(kafka_host="localhost:9092"):
     """ Get Kafka admin client for the given host and port
@@ -45,6 +45,23 @@ def create_topics(client):
         except Exception as e:
             print("Failed to create topic {}: {}".format(topic, e))
     print('\n')
+
+
+def describe_consumer_group(consumer_group):
+    bash_cmd = [
+        "docker-compose",
+        "exec",
+        "kafka",
+        "/bin/kafka-consumer-groups",
+        "--bootstrap-server",
+        "localhost:9092",
+        "--describe",
+        "--group",
+        consumer_group
+    ]
+    process = subprocess.Popen(bash_cmd, stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    print(str(output).replace("\\r\\n", "\n"))
 
 
 def main():
