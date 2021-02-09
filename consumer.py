@@ -5,7 +5,8 @@ def get_consumer(kafka_host="localhost:9092"):
     return Consumer({
         'bootstrap.servers': kafka_host,
         'group.id': 'consumerGroup',
-        'auto.offset.reset': 'earliest'
+        'auto.offset.reset': 'earliest',
+        'max.poll.interval.ms': '10000',
     })
 
 
