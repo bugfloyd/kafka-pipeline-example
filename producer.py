@@ -1,9 +1,13 @@
 from confluent_kafka import Producer
+from random import randint
+from time import sleep
 
 
 def get_producer(kafka_host="localhost:9092"):
     return Producer({
         'bootstrap.servers': kafka_host,
+        'linger.ms': '1000',
+        'compression.type': 'gzip'
     })
 
 
@@ -13,10 +17,10 @@ def delivery_report(err, msg):
     if err is not None:
         print('Message delivery failed: {}'.format(err))
     else:
-        print('Message with key {} delivered to {} [{}]'.format(msg.key(), msg.topic(), msg.partition()))
+        print('Message with key {} delivered to {} [{}]'.format('', msg.topic(), msg.partition()))
 
 
-def produce_messages(producer, messages):
+def produce(producer, messages):
     for data in messages:
         # Trigger any available delivery report callbacks from previous produce() calls
         producer.poll(0)
@@ -37,6 +41,24 @@ def produce_messages(producer, messages):
     producer.flush()
 
 
+def produce_many(producer, count, sleep_time=0.01, message="Order accepted."):
+    producer.poll(0)
+
+    print("Attempting to produce {} messages".format(count))
+    i = 1
+    while i < count:
+        producer.produce(
+            'quote-feedback',
+            message.encode('utf-8'),
+            key=bytes(randint(1, 1500)),
+            callback=delivery_report
+        )
+        sleep(sleep_time)
+        i += 1
+
+    producer.flush()
+
+
 def main():
     producer = get_producer()
     messages = [
@@ -44,7 +66,7 @@ def main():
         {'key': 2, 'message': "Order 28587 accepted"},
         {'key': 3, 'message': "Order 285874 accepted"}
     ]
-    produce_messages(producer, messages)
+    produce(producer, messages)
 
 
 if __name__ == '__main__':
