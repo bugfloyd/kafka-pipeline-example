@@ -5,7 +5,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
   kafka1:
-    image: confluentinc/cp-kafka
+    image: confluentinc/cp-enterprise-kafka
+    container_name: kafka1
     depends_on:
       - zookeeper
     environment:
@@ -14,11 +15,22 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LOG4J_LOGGERS: kafka.controller=INFO,state.change.logger=INFO
-      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      # Confluent Metrics Reporter
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 3
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka1:29091,kafka2:29092,kafka3:29093
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_SASL_MECHANISM: PLAIN
+      CONFLUENT_METRICS_REPORTER_MAX_REQUEST_SIZE: 10485760
+      # To avoid race condition with control-center
+      # CONFLUENT_METRICS_REPORTER_TOPIC_CREATE: 'false'
+      CONFLUENT_METRICS_REPORTER_TOPIC_CREATE: 'true'
     ports:
       - 9091:9091
   kafka2:
-    image: confluentinc/cp-kafka
+    image: confluentinc/cp-enterprise-kafka
+    container_name: kafka2
     depends_on:
       - zookeeper
     environment:
@@ -31,7 +43,8 @@ services:
     ports:
       - 9092:9092
   kafka3:
-    image: confluentinc/cp-kafka
+    image: confluentinc/cp-enterprise-kafka
+    container_name: kafka3
     depends_on:
       - zookeeper
     environment:
