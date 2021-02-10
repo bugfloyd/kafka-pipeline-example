@@ -1,4 +1,4 @@
-from confluent_kafka.admin import AdminClient, NewTopic, TopicMetadata
+from confluent_kafka.admin import AdminClient, NewTopic
 import subprocess
 
 
