@@ -1,0 +1,27 @@
+{
+  "namespace": "bugfloyd.avro",
+  "type": "record",
+  "name": "Ordered_Product",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "int"
+    },
+    {
+      "name": "order_product_id",
+      "type": "int"
+    },
+    {
+      "name": "user_quote",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "name": "ordered_quantity",
+      "type": "int",
+      "default": 1
+    }
+  ]
+}

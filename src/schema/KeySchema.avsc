@@ -1,0 +1,11 @@
+{
+  "namespace": "bugfloyd.avro",
+  "type": "record",
+  "name": "User",
+  "fields": [
+    {
+      "name": "id",
+      "type": "int"
+    }
+  ]
+}
