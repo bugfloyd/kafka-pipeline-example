@@ -2,8 +2,10 @@ version: "3.7"
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper
+    container_name: kafka_zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+
   kafka1:
     image: confluentinc/cp-enterprise-kafka
     container_name: kafka1
@@ -11,7 +13,8 @@ services:
       - zookeeper
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:29092,PLAINTEXT_HOST://localhost:9091
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:29091,PLAINTEXT_HOST://localhost:9091
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LOG4J_LOGGERS: kafka.controller=INFO,state.change.logger=INFO
@@ -28,6 +31,8 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_CREATE: 'true'
     ports:
       - 9091:9091
+      - 29091:29091
+
   kafka2:
     image: confluentinc/cp-enterprise-kafka
     container_name: kafka2
@@ -35,6 +40,7 @@ services:
       - zookeeper
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -42,6 +48,8 @@ services:
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     ports:
       - 9092:9092
+      - 29092:29092
+
   kafka3:
     image: confluentinc/cp-enterprise-kafka
     container_name: kafka3
@@ -49,7 +57,8 @@ services:
       - zookeeper
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29093,PLAINTEXT_HOST://localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LOG4J_LOGGERS: kafka.controller=INFO,state.change.logger=INFO
