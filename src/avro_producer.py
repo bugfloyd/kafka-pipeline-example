@@ -4,39 +4,7 @@ from six.moves import input
 from confluent_kafka import SerializingProducer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
-
-
-class UserQuoteKey(object):
-    """
-    UserQuoteKey record
-
-    Args:
-        user_id (int): User ID
-
-    """
-    def __init__(self, user_id):
-        self.user_id = user_id
-
-
-class UserQuoteValue(object):
-    """
-    UserQuoteValue record
-
-    Args:
-        order_product_id (int): User's name
-
-        user_quote (int): User's quoted price
-
-        quoted_quantity (int): User's quoted quantity
-
-        user_note (string): User's note
-
-    """
-    def __init__(self, order_product_id, user_quote, quoted_quantity, user_note):
-        self.order_product_id = order_product_id
-        self.user_quote = user_quote
-        self.quoted_quantity = quoted_quantity
-        self.user_note = user_note
+from message_objects import UserQuoteKey, UserQuoteValue
 
 
 def user_quote_key_to_dict(user_quote_key, ctx):
@@ -70,8 +38,8 @@ def user_quote_value_to_dict(user_quote_value, ctx):
         dict: Dict populated with user quote attributes to be serialized.
 
     """
-    return dict(order_product_id=user_quote_value.order_product_id,
-                user_quote=user_quote_value.user_quote,
+    return dict(product_id=user_quote_value.product_id,
+                quoted_price=user_quote_value.quoted_price,
                 quoted_quantity=user_quote_value.quoted_quantity,
                 user_note=user_quote_value.user_note)
 
@@ -125,18 +93,17 @@ def main(args):
         try:
             user_id = input("Enter User ID: ")
             product_id = input("Enter Product ID: ")
-            user_quote = input("Enter price: ")
+            quoted_price = input("Enter price: ")
             quoted_quantity = int(input("Enter the desired quantity: "))
             user_note = input("Enter additional note: ")
 
             user_quote_key = UserQuoteKey(user_id=int(user_id))
 
-            user_quote_value = UserQuoteValue(
-                order_product_id=int(product_id),
-                user_quote=int(user_quote),
-                quoted_quantity=quoted_quantity,
-                user_note=user_note
-            )
+            user_quote_value = UserQuoteValue(product_id=int(product_id),
+                                              quoted_price=int(quoted_price),
+                                              quoted_quantity=quoted_quantity,
+                                              user_note=user_note)
+
             producer.produce(topic=topic, key=user_quote_key, value=user_quote_value,
                              on_delivery=delivery_report)
         except KeyboardInterrupt:

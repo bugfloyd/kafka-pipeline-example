@@ -4,11 +4,11 @@
   "name": "User_Quote",
   "fields": [
     {
-      "name": "order_product_id",
+      "name": "product_id",
       "type": "int"
     },
     {
-      "name": "user_quote",
+      "name": "quoted_price",
       "type": [
         "int",
         "null"
