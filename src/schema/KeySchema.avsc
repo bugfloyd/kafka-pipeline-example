@@ -4,7 +4,7 @@
   "name": "User",
   "fields": [
     {
-      "name": "id",
+      "name": "user_id",
       "type": "int"
     }
   ]

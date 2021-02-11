@@ -1,12 +1,8 @@
 {
   "namespace": "bugfloyd.avro",
   "type": "record",
-  "name": "Ordered_Product",
+  "name": "User_Quote",
   "fields": [
-    {
-      "name": "user_id",
-      "type": "int"
-    },
     {
       "name": "order_product_id",
       "type": "int"
@@ -19,9 +15,16 @@
       ]
     },
     {
-      "name": "ordered_quantity",
+      "name": "quoted_quantity",
       "type": "int",
       "default": 1
+    },
+    {
+      "name": "user_note",
+      "type": [
+        "string",
+        "null"
+      ]
     }
   ]
 }
